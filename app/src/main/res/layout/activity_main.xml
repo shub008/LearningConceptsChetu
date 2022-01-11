@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp">
+
+        <EditText
+            android:id="@+id/etInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_something"
+            android:inputType="number"
+            android:textColor="@color/txt_color" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tilEt"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/txt_color"
+        android:onClick="onSubmitButtonClick"
+        android:text="@string/btn1"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_size" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSubmit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/purple_200"
+        android:textSize="@dimen/txt_size"
+        android:textStyle="bold"
+        android:visibility="visible"
+        android:text="ajsdhywgafuwer"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/llCheckboxes"
+        android:orientation="horizontal"
+        android:layout_below="@+id/tvResult"
+        android:weightSum="1"
+        >
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cbMale"
+        android:text="Male"
+        android:layout_below="@+id/tvResult"
+        android:layout_marginTop="50dp"
+        android:layout_weight=".5"
+        />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cbFeMale"
+        android:text="Female"
+        android:layout_below="@+id/tvResult"
+        android:layout_marginTop="50dp"
+        android:layout_weight=".5"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/llReadioboxes"
+        android:orientation="horizontal"
+        android:layout_below="@+id/llCheckboxes"
+        android:weightSum="1"
+        >
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioGroup"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            >
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rbMale"
+                android:text="Male"
+                android:layout_weight=".5"
+                />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rbFemale"
+                android:text="Female"
+                android:layout_weight=".5"
+                />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <!--<Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn2"
+        android:text="Button 2"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/btn1"
+        />-->
+
+</RelativeLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".activities.IntentConceptActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter Fname"
+        android:id="@+id/tvFname"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tvFname"
+        android:text="@string/star_symbol"
+        android:layout_marginLeft="2dp"
+        android:textColor="@color/text_red"
+        />
+
+    <EditText
+        android:id="@+id/et_fname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapCharacters"
+        android:textSize="@dimen/txt_size" />
+
+    <EditText
+        android:id="@+id/et_lname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_fname"
+        android:hint="Last name"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/txt_size"
+        android:inputType="textCapCharacters"
+        />
+
+    <EditText
+        android:id="@+id/et_phoneno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_lname"
+        android:layout_marginTop="10dp"
+        android:hint="Phone no"
+        android:inputType="number"
+        android:textSize="@dimen/txt_size" />
+
+    <Button
+        android:id="@+id/btnClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Click"
+        android:textAllCaps="false"
+        android:textSize="@dimen/txt_size" />
+
+</RelativeLayout>
