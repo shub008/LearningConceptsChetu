@@ -1,6 +1,7 @@
 package com.example.myapplication.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -86,6 +87,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 //            }
 //        });
 
+        binding.btnSubmit.setBackgroundColor(Color.RED);
 
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
