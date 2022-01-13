@@ -12,20 +12,23 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/til_1"
+        android:id="@+id/til_name"
         android:hint="Name"
         app:hintTextColor="@color/black"
-        app:errorEnabled="true"
         app:helperText="Required*"
         app:helperTextTextColor="@color/text_red"
         app:counterEnabled="true"
         app:counterMaxLength="10"
         app:counterTextColor="@color/text_red"
         app:startIconDrawable="@drawable/ic_profile"
+        app:endIconMode="clear_text"
+        app:errorEnabled="true"
+        app:errorTextColor="@color/text_red"
         >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/tie_name"
             android:textCursorDrawable="@color/teal_700"
             android:maxLength="10"
             />
@@ -35,10 +38,10 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/til_1"
+        android:layout_below="@id/til_name"
+        android:id="@+id/til_mob_umber"
         android:hint="Mobile Number"
         app:hintTextColor="@color/black"
-        app:errorEnabled="true"
         app:helperText="Required*"
         app:helperTextTextColor="@color/text_red"
         app:counterEnabled="true"
@@ -47,7 +50,6 @@
         app:prefixText="+91"
         app:prefixTextColor="@color/text_red"
         android:layout_marginTop="10dp"
-
         >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -57,5 +59,52 @@
             android:inputType="number"
             />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/til_passowrd"
+        android:layout_below="@id/til_mob_umber"
+        android:hint="Password"
+        app:hintTextColor="@color/black"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/text_red"
+        app:counterEnabled="true"
+        app:counterMaxLength="10"
+        app:counterTextColor="@color/text_red"
+        app:startIconDrawable="@drawable/ic_lock"
+        android:layout_marginTop="10dp"
+        app:endIconMode="password_toggle"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textCursorDrawable="@color/teal_700"
+            android:maxLength="10"
+            android:inputType="textPassword"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click Here"
+        android:layout_below="@id/til_passowrd"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        />
+
+
+    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/btn_click"
+        android:hint="Enter something"
+        android:inputType="number"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        >
+    </com.google.android.material.textfield.MaterialAutoCompleteTextView>
 
 </RelativeLayout>

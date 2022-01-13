@@ -32,4 +32,8 @@ public class BaseActivity extends AppCompatActivity {
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
+
+    public void showToast(String msg){
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
 }
