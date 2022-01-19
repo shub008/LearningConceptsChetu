@@ -1,10 +1,14 @@
 package com.example.myapplication.db;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import com.example.myapplication.utility.Utility;
 
 public class MyAdapter {
     // DB name
@@ -39,9 +43,32 @@ public class MyAdapter {
         return this;
     }
 
+    // TODO : method for insertion records into DB
 
+    public void insertRecord(Context context, String photo, String fname, String lname, String email, String phone){
+        String localMsg;
+        ContentValues values = new ContentValues();
+        values.put(COL_PHOTO, photo);
+        values.put(COL_FNAME, fname);
+        values.put(COL_LNAME, lname);
+        values.put(COL_EMAIL, email);
+        values.put(COL_PHONE, phone);
 
+        long insertionValue = sqLiteDatabase.insert(TABLE_NAME, null, values);
+        if (insertionValue == -1){
+            localMsg = "Insertion failed";
+        }else {
+            localMsg = "inserted Successfully.";
+        }
+        Utility.showToast(context, localMsg);
+    }
 
+    //TODO : method for retrive records from DB
+
+    public Cursor getAllRecords(){
+        String[] COLUMNS = {COL_ROW, COL_PHOTO, COL_FNAME, COL_LNAME, COL_EMAIL, COL_PHONE};
+        return sqLiteDatabase.query(TABLE_NAME, COLUMNS, null, null, null, null, null);
+    }
     public class MyDatabase extends SQLiteOpenHelper{
 
         public MyDatabase(@Nullable Context context) {
