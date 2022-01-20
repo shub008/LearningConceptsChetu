@@ -69,6 +69,18 @@ public class MyAdapter {
         String[] COLUMNS = {COL_ROW, COL_PHOTO, COL_FNAME, COL_LNAME, COL_EMAIL, COL_PHONE};
         return sqLiteDatabase.query(TABLE_NAME, COLUMNS, null, null, null, null, null);
     }
+
+    // TODO : delete single record
+
+    public void deleteRecord(String colRow, Context context){
+        int id = sqLiteDatabase.delete(TABLE_NAME, COL_ROW+" = "+colRow, null);
+        if (id > 0){
+            Utility.showToast(context, id+" record deleted.");
+        }else {
+            Utility.showToast(context, " Something went wrong.");
+        }
+    }
+
     public class MyDatabase extends SQLiteOpenHelper{
 
         public MyDatabase(@Nullable Context context) {

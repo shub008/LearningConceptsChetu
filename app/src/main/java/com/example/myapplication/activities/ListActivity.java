@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,11 +28,15 @@ import com.example.myapplication.R;
 import com.example.myapplication.databinding.ActivityListBinding;
 import com.example.myapplication.databinding.DialogProfileBinding;
 import com.example.myapplication.db.MyAdapter;
+import com.example.myapplication.db.MyCustomListAdapter;
+import com.example.myapplication.model.PersonDetails;
 import com.example.myapplication.sqliteDb.ProfileActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class ListActivity extends BaseActivity implements AdapterView.OnItemClickListener{
 
     private MyAdapter myAdapter;
     private int CAMERA_REQUEST_CODE = 101;
@@ -39,14 +44,16 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
     private String base64Image;
     private Cursor cursor;
     private ActivityListBinding binding;
+//    private MyCustomListAdapter myCustomListAdapter;
+    private int clickedPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countries);
-        binding.listView.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countries);
+//        binding.listView.setAdapter(adapter);
 
         binding.listView.setOnItemClickListener(this);
 
@@ -55,21 +62,32 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
 
         cursor = myAdapter.getAllRecords();
 
-        if (cursor.getCount() > 0){
-            cursor.moveToFirst();
-            do {
-                String serNo = cursor.getString(0);// serialNo
-                String photo = cursor.getString(1);// photo
-                String fName = cursor.getString(2);// fname
-                String lName = cursor.getString(3);// lname
-                String email = cursor.getString(4);// email
-                String phonoNo = cursor.getString(5);// phoneNo
-                Log.d("C_DATA", serNo+"\n"+photo+"\n"+fName+"\n"+lName+"\n"+email+"\n"+phonoNo+"\n");
-            }while (cursor.moveToNext());
-        }else {
-            showToast("No records found");
-        }
-        Log.d("Cursor", ""+cursor);
+//        List<PersonDetails> finalList = new ArrayList<>();
+//        if (cursor.getCount() > 0){
+//            cursor.moveToFirst();
+//            do {
+////                List<PersonDetails> tempList = new ArrayList<>();
+//                String serNo = cursor.getString(0);// serialNo
+//                String photo = cursor.getString(1);// photo
+//                String fName = cursor.getString(2);// fname
+//                String lName = cursor.getString(3);// lname
+//                String email = cursor.getString(4);// email
+//                String phonoNo = cursor.getString(5);// phoneNo
+//                PersonDetails personDetails = new PersonDetails(photo, fName, lName, email, phonoNo);
+//                finalList.add(personDetails);
+//                Log.d("C_DATA", serNo+"\n"+photo+"\n"+fName+"\n"+lName+"\n"+email+"\n"+phonoNo+"\n");
+//            }while (cursor.moveToNext());
+//        }else {
+//            showToast("No records found");
+//        }
+//        Log.d("Cursor", ""+cursor);
+
+//        MyCustomListAdapter myCustomListAdapter = new MyCustomListAdapter(finalList, context);
+//        binding.listView.setAdapter(myCustomListAdapter);
+
+        loadDataInListView();
+        registerForContextMenu(binding.listView);
+
 
     }
 
@@ -112,6 +130,11 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
                         myAdapter.insertRecord(context, base64Image, bindingProfile.tilFname.getEditText().getText().toString(), bindingProfile.tilLname.getEditText().getText().toString()
                                 ,bindingProfile.tilEmail.getEditText().getText().toString(), bindingProfile.tilMobileNo.getEditText().getText().toString());
                         dialog.dismiss();
+
+                        // TODO : Refresh the listview
+                        cursor = myAdapter.getAllRecords();
+
+                        loadDataInListView();
                     }
                 });
 
@@ -161,7 +184,62 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String name = parent.getItemAtPosition(position).toString();
-        showToast(name);
+        clickedPosition = position;
+//        String name = parent.getItemAtPosition(position).toString();
+//        showToast(name);
+    }
+
+    private List<PersonDetails> getDatainList(){
+        List<PersonDetails> finalList = new ArrayList<>();
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                String serNo = cursor.getString(0);// serialNo
+                String photo = cursor.getString(1);// photo
+                String fName = cursor.getString(2);// fname
+                String lName = cursor.getString(3);// lname
+                String email = cursor.getString(4);// email
+                String phonoNo = cursor.getString(5);// phoneNo
+                PersonDetails personDetails = new PersonDetails(photo, fName, lName, email, phonoNo);
+                finalList.add(personDetails);
+            } while (cursor.moveToNext());
+        }
+        return finalList;
+    }
+
+    private void loadDataInListView(){
+        if (getDatainList().size() > 0) {
+            MyCustomListAdapter myCustomListAdapter = new MyCustomListAdapter(getDatainList(), context);
+            binding.listView.setAdapter(myCustomListAdapter);
+        }else {
+            showToast("No Data found.");
+        }
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.context_menu_option, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item_delete:
+                // TODO : DElete record
+                cursor.moveToPosition(clickedPosition);
+                String colRow = cursor.getString(0);
+                myAdapter.deleteRecord(colRow, context);
+
+                cursor = myAdapter.getAllRecords();
+                loadDataInListView();
+                break;
+            case R.id.item_update:
+                // TODO : Update record
+
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }
