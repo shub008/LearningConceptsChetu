@@ -36,7 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListActivity extends BaseActivity implements AdapterView.OnItemClickListener{
+public class ListActivity extends BaseActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     private MyAdapter myAdapter;
     private int CAMERA_REQUEST_CODE = 101;
@@ -51,6 +51,7 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
         super.onCreate(savedInstanceState);
         binding = ActivityListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        // TODo : simple ListView implementation
 
 //        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countries);
 //        binding.listView.setAdapter(adapter);
@@ -59,8 +60,6 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
 
         myAdapter = new MyAdapter(context);
         myAdapter.openDatabase();
-
-        cursor = myAdapter.getAllRecords();
 
 //        List<PersonDetails> finalList = new ArrayList<>();
 //        if (cursor.getCount() > 0){
@@ -85,8 +84,9 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
 //        MyCustomListAdapter myCustomListAdapter = new MyCustomListAdapter(finalList, context);
 //        binding.listView.setAdapter(myCustomListAdapter);
 
-        loadDataInListView();
+        loadData();
         registerForContextMenu(binding.listView);
+        binding.listView.setOnItemLongClickListener(this);
 
 
     }
@@ -132,9 +132,8 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
                         dialog.dismiss();
 
                         // TODO : Refresh the listview
-                        cursor = myAdapter.getAllRecords();
-
-                        loadDataInListView();
+                        loadData();
+                        base64Image ="";
                     }
                 });
 
@@ -143,6 +142,8 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
                 break;
             case  R.id.item_delete_all_records:
                 // TODO : Delete related task
+                myAdapter.deleteAllRecords(context);
+                loadData();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -167,7 +168,6 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             bindingProfile.imageView.setImageBitmap(bitmap);
 
-
             // TODO : wsaving BITMAP to base64
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
@@ -184,12 +184,15 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        clickedPosition = position;
 //        String name = parent.getItemAtPosition(position).toString();
 //        showToast(name);
+        PersonDetails personDetails = (PersonDetails)parent.getItemAtPosition(position);
+        Log.d("PersonDetails", ""+personDetails);
     }
 
     private List<PersonDetails> getDatainList(){
+//        cursor = myAdapter.getAllRecords("mohit");
+        cursor = myAdapter.getAllRecords();
         List<PersonDetails> finalList = new ArrayList<>();
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -207,12 +210,15 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
         return finalList;
     }
 
-    private void loadDataInListView(){
+    private void loadData(){
         if (getDatainList().size() > 0) {
+            binding.listView.setVisibility(View.VISIBLE);
             MyCustomListAdapter myCustomListAdapter = new MyCustomListAdapter(getDatainList(), context);
             binding.listView.setAdapter(myCustomListAdapter);
         }else {
             showToast("No Data found.");
+            binding.listView.setVisibility(View.GONE);
+
         }
     }
 
@@ -231,15 +237,63 @@ public class ListActivity extends BaseActivity implements AdapterView.OnItemClic
                 cursor.moveToPosition(clickedPosition);
                 String colRow = cursor.getString(0);
                 myAdapter.deleteRecord(colRow, context);
+                loadData();
 
-                cursor = myAdapter.getAllRecords();
-                loadDataInListView();
                 break;
             case R.id.item_update:
                 // TODO : Update record
+                DialogProfileBinding updateProfileBinding = DialogProfileBinding.inflate(getLayoutInflater());
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(updateProfileBinding.getRoot());
+                dialog.setCancelable(false);
+                updateProfileBinding.btnSubmit.setText("Update");
 
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+                cursor.moveToPosition(clickedPosition);
+
+                String rowId = cursor.getString(0);
+                String photo = cursor.getString(1);// photo
+                String fName = cursor.getString(2);// fname
+                String lName = cursor.getString(3);// lname
+                String email = cursor.getString(4);// email
+                String phonoNo = cursor.getString(5);// phoneNo
+
+                byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                updateProfileBinding.etFname.setText(fName);
+                updateProfileBinding.etLname.setText(lName);
+                updateProfileBinding.etEmail.setText(email);
+                updateProfileBinding.etPhoneno.setText(phonoNo);
+                updateProfileBinding.imageView.setImageBitmap(bitmap);
+                dialog.show();
+
+                updateProfileBinding.btnSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream .toByteArray();
+                        String base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                        myAdapter.updateRecord(context, rowId, base64Image, updateProfileBinding.tilFname.getEditText().getText().toString(),
+                                updateProfileBinding.tilLname.getEditText().getText().toString(),updateProfileBinding.tilEmail.getEditText().getText().toString(),
+                                updateProfileBinding.tilMobileNo.getEditText().getText().toString());
+                        dialog.dismiss();
+                        loadData();
+                    }
+                });
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        clickedPosition = position;
+        return false;
     }
 }

@@ -65,6 +65,11 @@ public class MyAdapter {
 
     //TODO : method for retrive records from DB
 
+    public Cursor getAllRecords(String fname){
+        String[] COLUMNS = {COL_ROW, COL_PHOTO, COL_FNAME, COL_LNAME, COL_EMAIL, COL_PHONE};
+        return sqLiteDatabase.query(TABLE_NAME, COLUMNS, COL_FNAME+" = "+"'"+fname+"'", null, null, null, null);
+    }
+
     public Cursor getAllRecords(){
         String[] COLUMNS = {COL_ROW, COL_PHOTO, COL_FNAME, COL_LNAME, COL_EMAIL, COL_PHONE};
         return sqLiteDatabase.query(TABLE_NAME, COLUMNS, null, null, null, null, null);
@@ -80,6 +85,36 @@ public class MyAdapter {
             Utility.showToast(context, " Something went wrong.");
         }
     }
+
+    // TODO : Delete all records
+    public void deleteAllRecords(Context context){
+        int id = sqLiteDatabase.delete(TABLE_NAME, null, null);
+        if (id > 0){
+            Utility.showToast(context, id+" record deleted.");
+        }else {
+            Utility.showToast(context, " Something went wrong.");
+        }
+    }
+
+    //TODO : UPDATE records
+    public void updateRecord(Context context, String rowId, String photo, String fname, String lname, String email, String phone){
+        String localMsg;
+        ContentValues values = new ContentValues();
+        values.put(COL_PHOTO, photo);
+        values.put(COL_FNAME, fname);
+        values.put(COL_LNAME, lname);
+        values.put(COL_EMAIL, email);
+        values.put(COL_PHONE, phone);
+
+        int updateRecord = sqLiteDatabase.update(TABLE_NAME, values, COL_ROW+" = "+rowId, null);
+        if (updateRecord == -1){
+            localMsg = "Updation failed";
+        }else {
+            localMsg = "updated Successfully.";
+        }
+        Utility.showToast(context, localMsg);
+    }
+
 
     public class MyDatabase extends SQLiteOpenHelper{
 
