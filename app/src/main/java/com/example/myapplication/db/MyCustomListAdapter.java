@@ -51,7 +51,6 @@ public class MyCustomListAdapter extends BaseAdapter {
         binding.itemName.setText(name);
         binding.itemEmail.setText(personDetails.get(position).getEmail());
         binding.itemPhone.setText(personDetails.get(position).getPhoneNo());
-
         return view;
     }
 }
