@@ -12,6 +12,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.activities.BaseActivity;
 import com.example.myapplication.adapters.MyRecyclerViewAdapter;
 import com.example.myapplication.databinding.ActivityPostsRecyclerviewBinding;
+import com.example.myapplication.interfaces.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,9 @@ public class PostsRecyclerviewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityPostsRecyclerviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        getPostsData();
+//        getPostsData();
+
+        getUsersApiCall();
 
     }
 
@@ -53,7 +56,14 @@ public class PostsRecyclerviewActivity extends BaseActivity {
                    list.add(postResponse);
                }
 
-               PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(PostsRecyclerviewActivity.this, list);
+//               PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(PostsRecyclerviewActivity.this, list);
+               PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(PostsRecyclerviewActivity.this, list, new OnItemClickListener() {
+                   @Override
+                   public void onItemClick(List<PostResponse> list, int position) {
+                       PostResponse postResponse = list.get(position);
+                       showToast(postResponse.getTitle());
+                   }
+               });
                binding.recyclerViewPost.setLayoutManager(new LinearLayoutManager(PostsRecyclerviewActivity.this));
                binding.recyclerViewPost.setAdapter(adapter);
                adapter.notifyDataSetChanged();
@@ -67,5 +77,29 @@ public class PostsRecyclerviewActivity extends BaseActivity {
 
            }
        });
+    }
+
+    private void getUsersApiCall(){
+        ProgressDialog dialog = new ProgressDialog(PostsRecyclerviewActivity.this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Please wait...");
+        dialog.setCancelable(false);
+        dialog.show();
+
+        ApiCall apiCall = RetrofitInstance.createInstances(ApiCall.class);
+        Call<List<UsersResponse>> call =  apiCall.getUsers();
+        call.enqueue(new Callback<List<UsersResponse>>() {
+            @Override
+            public void onResponse(Call<List<UsersResponse>> call, Response<List<UsersResponse>> response) {
+                dialog.dismiss();
+                List<UsersResponse> responses = response.body();
+                Log.d("UsersRes", ""+responses);
+            }
+
+            @Override
+            public void onFailure(Call<List<UsersResponse>> call, Throwable t) {
+                showToast(t.getMessage());
+            }
+        });
     }
 }

@@ -9,16 +9,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.databinding.LayoutPostBinding;
+import com.example.myapplication.interfaces.OnItemClickListener;
 
 import java.util.List;
 
 public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerViewAdapter.MyVoiewHolder>{
     Context context;
     List<PostResponse> postResponses;
+    private OnItemClickListener listener;
 
     public PostRecyclerViewAdapter(Context context, List<PostResponse> postResponses) {
         this.context = context;
         this.postResponses = postResponses;
+    }
+
+    public PostRecyclerViewAdapter(Context context, List<PostResponse> postResponses, OnItemClickListener listener) {
+        this.context = context;
+        this.postResponses = postResponses;
+        this.listener = listener;
     }
 
     @NonNull
@@ -30,9 +38,15 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull PostRecyclerViewAdapter.MyVoiewHolder holder, int position) {
-//        holder.binding.itemUserId.setText(postResponses.get(position).getUserId());
-        holder.binding.itemUserIdId.setText(postResponses.get(position).getUserId());
+        holder.binding.itemRetUserId.setText(String.valueOf(postResponses.get(position).getUserId()));
+        holder.binding.itemRetId.setText(String.valueOf(postResponses.get(position).getUserId()));
         holder.binding.itemTitle.setText(postResponses.get(position).getTitle());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(postResponses, position);
+            }
+        });
     }
 
     @Override

@@ -11,4 +11,7 @@ public interface ApiCall {
   @GET("/posts")
   Call<List<PostResponse>> getPosts();
 
+  @GET("/users")
+  Call<List<UsersResponse>> getUsers();
+
 }
